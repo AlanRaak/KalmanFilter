@@ -143,7 +143,7 @@ void ExtendedKalmanFilter::Predict(double dt)
     // constexpr double dt{0.1}; // used for jacobian's derivatives; i think it should be equal to time between 2 consecutive measurements
     math::matrix initial_state_prediction{model::next_state(x, dt)};
 
-    for (int row_num{0}; row_num < F.array.size(); row_num++)
+    for (int row_num{0}; row_num < F.array.size(); row_num++) // jacobian calculation perhaps as a separate function (../math/matrix.hpp)
     {
         math::matrix x_delta{x};
         x_delta.array[row_num][0] = x_delta.array[row_num][0] + jacobian_deltas[row_num];

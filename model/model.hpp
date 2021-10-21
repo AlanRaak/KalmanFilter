@@ -153,11 +153,11 @@ namespace model
 
 	inline math::matrix noisify_state(math::matrix state)
 	{
-		state.array[0][0] += rand() % 100 / 100.0; // pos_X
-		state.array[1][0] += rand() % 100 / 100.0; // pos_y
-		state.array[2][0] += rand() % 10 / 100.0; // orientation
-		state.array[3][0] += rand() % 10 / 100.0; // steering_angle
-		state.array[4][0] += rand() % 100 / 100.0; // speed
+		state.array[0][0] += (rand() % 101 - 100 / 2.0) / 100.0; // pos_X
+		state.array[1][0] += (rand() % 101 - 100 / 2.0) / 100.0; // pos_y
+		state.array[2][0] += (rand() % 11 - 10 / 2.0) / 100.0; // orientation
+		state.array[3][0] += (rand() % 11 - 10 / 2.0) / 100.0; // steering_angle
+		state.array[4][0] += (rand() % 101 - 100 / 2.0) / 100.0; // speed
 
 		return state;
 	}
