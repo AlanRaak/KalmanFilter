@@ -1,0 +1,3 @@
+cmake .. -DCMAKE_BUILD_TYPE=Debug // Genertes build files(debug to deal with some core dumps), run in /build
+make // Run after cmake to build the project
+./main // To run
