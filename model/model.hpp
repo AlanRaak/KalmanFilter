@@ -146,18 +146,18 @@ namespace model
 			x.array[2][0] += x.array[4][0] * std::tan(x.array[3][0]) / wheelbase * ddt;
 		}
 		// Normalize orientation
-		x.array[2][0] = std::atan2(std::sin(x.array[2][0]), std::cos(x.array[2][0]));
+		//x.array[2][0] = std::atan2(std::sin(x.array[2][0]), std::cos(x.array[2][0])); // u brek jacob?
 
 		return x;
 	}
 
 	inline math::matrix noisify_state(math::matrix state)
 	{
-		state.array[0][0] += (rand() % 101 - 100 / 2.0) / 100.0; // pos_X
-		state.array[1][0] += (rand() % 101 - 100 / 2.0) / 100.0; // pos_y
-		state.array[2][0] += (rand() % 11 - 10 / 2.0) / 100.0; // orientation
-		state.array[3][0] += (rand() % 11 - 10 / 2.0) / 100.0; // steering_angle
-		state.array[4][0] += (rand() % 101 - 100 / 2.0) / 100.0; // speed
+		state.array[0][0] += (rand() % 101 - 100 / 2.0) / 1000.0; // pos_X
+		state.array[1][0] += (rand() % 101 - 100 / 2.0) / 1000.0; // pos_y
+		state.array[2][0] += (rand() % 11 - 10 / 2.0) / 1000.0; // orientation
+		state.array[3][0] += (rand() % 11 - 10 / 2.0) / 1000.0; // steering_angle
+		state.array[4][0] += (rand() % 101 - 100 / 2.0) / 1000.0; // speed
 
 		return state;
 	}

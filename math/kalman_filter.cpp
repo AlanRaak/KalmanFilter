@@ -51,18 +51,20 @@ KalmanFilter::KalmanFilter(double x_pos, double y_pos, double orientation, doubl
                {0.0}};
 
     // uncertainty matrix - (trust more previous state with smaller numbers [trusts predicted/simulated values more])
-    P.array = {{100.0,   0.0,    0.0,    0.0,    0.0},
-               {0.0, 100.0,    0.0,    0.0,    0.0},
-               {0.0,   0.0,  100.0,    0.0,    0.0},
-               {0.0,   0.0,    0.0,  100.0,    0.0},
-               {0.0,   0.0,    0.0,    0.0,  100.0}};
+    const double temp_value_P{0.1};
+    P.array = {{temp_value_P,   0.0,    0.0,    0.0,    0.0},
+               {0.0, temp_value_P,    0.0,    0.0,    0.0},
+               {0.0,   0.0,  temp_value_P,    0.0,    0.0},
+               {0.0,   0.0,    0.0,  temp_value_P,    0.0},
+               {0.0,   0.0,    0.0,    0.0,  temp_value_P}};
 
-    // matrix to add to P - won't allow craintiy to go too small
-    P_add.array = {{0.1,    0.0,    0.0,    0.0,   0.0},
-            {0.0,    0.1,    0.0,    0.0,    0.0},
-            {0.0,    0.0,    0.1,    0.0,    0.0},
-            {0.0,    0.0,    0.0,    0.1,    0.0},
-            {0.0,    0.0,    0.0,    0.0,    0.1}};
+    // matrix to add to P - won't allow uncertainty to go too small
+    const double temp_value{0.5};
+    P_add.array = {{temp_value,    0.0,    0.0,    0.0,   0.0},
+            {0.0,    temp_value,    0.0,    0.0,    0.0},
+            {0.0,    0.0,    temp_value,    0.0,    0.0},
+            {0.0,    0.0,    0.0,    temp_value,    0.0},
+            {0.0,    0.0,    0.0,    0.0,    temp_value}};
 
     // state transrom matrix
     F.array = {{1.0,   0.0,    0.0,    0.0,    0.0},
@@ -115,7 +117,7 @@ void KalmanFilter::Predict(double dt)
     // P = F * P * dlib::trans(F);
 }
 
-void KalmanFilter::UpdateMeasurements(math::matrix &measurements)
+void KalmanFilter::UpdateMeasurements(const math::matrix& measurements)
 {
 
     math::matrix y{measurements - (H * x)};
@@ -143,7 +145,7 @@ void ExtendedKalmanFilter::Predict(double dt)
     // constexpr double dt{0.1}; // used for jacobian's derivatives; i think it should be equal to time between 2 consecutive measurements
     math::matrix initial_state_prediction{model::next_state(x, dt)};
 
-    for (int row_num{0}; row_num < F.array.size(); row_num++) // jacobian calculation perhaps as a separate function (../math/matrix.hpp)
+    for (int row_num{0}; row_num < F.array.size(); row_num++) // jacobian calculation perhaps as a separate function (../math/matrix.cpp)
     {
         math::matrix x_delta{x};
         x_delta.array[row_num][0] = x_delta.array[row_num][0] + jacobian_deltas[row_num];

@@ -27,9 +27,9 @@ namespace math
 
         matrix operator*(const matrix other);
 
-        matrix operator+ (matrix other);
+        matrix operator+ (const matrix& other) const;
 
-        matrix operator- (matrix other);
+        matrix operator- (const matrix& other) const;
 
         void print();
         // General matrix inverse. Uses Gauss-Jordan metho

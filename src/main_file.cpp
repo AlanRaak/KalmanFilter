@@ -31,29 +31,39 @@ int main()
     noisy_state_file << "x_pos, y_pos, orientation, steering_angle, speed\n";
     filtered_state_file << "x_pos, y_pos, orientation, steering_angle, speed\n";
 
-    ExtendedKalmanFilter ekf{10.0, 10.0, 0.0, 0.2, 2.0};
-    math::matrix measurements{{{10.0}, {10.0}, {0.0}, {0.0}, {1.0}}};
+    ExtendedKalmanFilter ekf_gps{10.0, 10.0, 0.0, 0.2, 2.0};
+    ExtendedKalmanFilter ekf_odo{10.0, 10.0, 0.0, 0.2, 2.0};
+
+    math::matrix gps_measurement{{{10.0}, {10.0}, {0.0}, {0.2}, {2.0}}};
 
     math::matrix true_next_state{{{10.0}, {10.0}, {0.0}, {0.2}, {1.0}}};
-    for (int i{}; i < 1000; i++)
+
+    double system_time{}; // in milliseconds
+    double gps_time{};
+    double odo_time{};
+    for (int i{}; i < 200; i++)
     {
-        // ekf.Predict(0.1);
-        // math::matrix true_next_state{};
-        // measurements.array[0][0] = 10.0 + i*0.2001;
-        // ekf.UpdateMeasurements(measurements);
+        system_time++;
 
-        ekf.Predict(0.1);
-        true_next_state = model::noisify_state(model::next_state(true_next_state, 0.1)); // ground truth (this also has noise actually; i think even more than measeurement on our ATV);
-                                                                   // TODO also test with adding noise here
-        math::matrix noisy_next_state{model::noisify_state(true_next_state)}; // aka noisy measurement
+        if (system_time - gps_time > 100) // make random interval instead of 100
+        {
+            ekf_gps.Predict(0.1); // use time diff
+            true_next_state = model::next_state(true_next_state, 0.1); // ground truth (this also has noise actually; i think even more than measeurement on our ATV);
+                                                                    // TODO also test with adding noise here
+            gps_measurement{model::noisify_state(true_next_state)}; // aka noisy measurement
+            // true_next_state = model::noisify_state(model::next_state(true_next_state, 0.1)); // vehicle mechanical noise; i think it makes sense adding this here
 
-        ekf.UpdateMeasurements(noisy_next_state); // does nuffin
-        ekf.x; // predicted new state
+            // Sensors measurement with noise
+            ekf_gps.UpdateMeasurements(gps_measurement);
+            ekf_gps.x; // predicted new state
+
+            gps_time = system_time;
+        }
 
         util::state_to_file(true_state_file, true_next_state);
-        util::state_to_file(noisy_state_file, noisy_next_state);
-        util::state_to_file(filtered_state_file, ekf.x);
-        if(i == 500) {true_next_state.array[3][0] *= -1;}
+        util::state_to_file(noisy_state_file, gps_measurement);
+        util::state_to_file(filtered_state_file, ekf_gps.x);
+        if(i == 100) {true_next_state.array[3][0] *= -1;}
     }
 
     true_state_file.close();

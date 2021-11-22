@@ -37,7 +37,7 @@ namespace math
         return product;
     }
 
-    matrix matrix::operator+ (matrix other)
+    matrix matrix::operator+ (const matrix& other) const
     {
         assert(rows == other.rows);
         assert(cols == other.cols);
@@ -51,7 +51,7 @@ namespace math
         return sum;
     }
 
-    matrix matrix::operator- (matrix other)
+    matrix matrix::operator- (const matrix& other) const
     {
         assert(rows == other.rows);
         assert(cols == other.cols);

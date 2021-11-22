@@ -26,7 +26,7 @@ public:
     math::matrix I {5, 5};
 
     void Predict(double dt);
-    void UpdateMeasurements(math::matrix& measurements); // update state x - which can be accesed after calling update on KalmanFilter (KalmanFilter.x)
+    void UpdateMeasurements(const math::matrix& measurements); // update state x - which can be accesed after calling update on KalmanFilter (KalmanFilter.x)
                                                                        //dlib::matrix<float, 6, 1> update(float x_pos, float y_pos, float orientation, float steering_angle, float speed, float gear);
 };
 
@@ -34,6 +34,6 @@ class ExtendedKalmanFilter : public KalmanFilter
 {
 public:
     ExtendedKalmanFilter(double x_pos, double y_pos, double orientation, double steering_angle, double speed);
-    const std::vector<double> jacobian_deltas{0.1, 0.1, 0.1, 0.1, 0.1}; // x_pos, y_pos, orientation, steering_angle, speed
+    const std::vector<double> jacobian_deltas{0.01, 0.01, 0.01, 0.01, 0.01}; // x_pos, y_pos, orientation, steering_angle, speed
     void Predict(double dt);
 };
